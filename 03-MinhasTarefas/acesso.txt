@@ -1,0 +1,13 @@
+# ACESSO VDI --> vdicloud.estacio.br
+## NO POWER SHELL **criando o projeto**
+npx create-expo-app --template
+# **SELECIONAR BLANK
+# **NOME: MINHASTAREFAS
+
+##EXECUTANDO O PROJETO NO TELEFONE (VDI)
+# Dentro da pasta do projeto --> cd nome_projeto
+npx expo start --tunnel
+
+##EXECUTANDO NO NAVEGADOR
+# Dentro da pasta do projeto (O servidor precisa estar desligado)
+npx expo install react-dom react-native-web @expo/metro-runtime
