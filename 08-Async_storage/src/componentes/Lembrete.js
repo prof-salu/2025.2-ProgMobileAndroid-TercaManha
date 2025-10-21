@@ -2,13 +2,14 @@ import {View, Text, StyleSheet,
         Button, TouchableOpacity} from 'react-native';
 
 export default function Lembrete({item}){
+    const dataFormatada = new Date(item.dataCriacao).toLocaleDateString('pt-BR');
     return(
         <TouchableOpacity>
             <View style={styles.itemLista}>
                 <View style={{flex: 1}}>
                     <Text style={styles.itemTitulo}>{item.titulo}</Text>
                     <Text style={styles.itemConteudo}>{item.conteudo}</Text>
-                    <Text style={styles.itemData}>Criado em: {item.dataCriacao}</Text>
+                    <Text style={styles.itemData}>Criado em: {dataFormatada}</Text>
                 </View>
             
                 <View style={styles.botoes}>

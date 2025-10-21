@@ -1,28 +1,49 @@
 import { StyleSheet, Text, View, SafeAreaView, TextInput, 
          Button, FlatList} from 'react-native';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 
 import Lembrete from './src/componentes/Lembrete';
+import * as LembreteDAO from './src/dao/LembreteDAO';
 
 export default function App() {
   const [titulo, setTitulo] = useState('');
   const [conteudo, setConteudo] = useState('');
-  const [lembretes, setLembretes] = useState([
-    {
-      id : 1, 
-      titulo: 'Simulado 01', 
-      conteudo : 'Estudar para o simulado 01',
-      dataCriacao : new Date().toLocaleDateString('pt-BR'),
-      finalizado : true,
-    },
-    {
-      id : 2, 
-      titulo: 'Simulado 02', 
-      conteudo : 'Estudar para o simulado 02',
-      dataCriacao : new Date().toLocaleDateString('pt-BR'),
-      finalizado : false,
-    },
-  ]);
+  const [lembretes, setLembretes] = useState([]);
+
+  useEffect(() => {
+    async function carregarDadosArquivo(){
+      const dados = await LembreteDAO.obterTodos();
+      setLembretes(dados);
+    }
+
+    carregarDadosArquivo();
+  }, []);
+
+  async function salvarLembrete(){
+    if(titulo.trim() === '' || conteudo.trim() === ''){
+      return;
+    }
+
+    const novoLembrete = {
+      id : Date.now().toString(),
+      titulo : titulo,
+      conteudo : conteudo,
+      dataCriacao : Date.now(),      
+    }
+
+    let novaLista;
+    novaLista = [...lembretes, novoLembrete];
+
+    await gravarDadosNoArquivo(novaLista);
+    setTitulo('');
+    setConteudo('');
+  }
+
+  async function gravarDadosNoArquivo(novaLista){
+    setLembretes(novaLista);
+    await LembreteDAO.salvarTodos(novaLista);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,7 +55,7 @@ export default function App() {
 
         <TextInput style={styles.input} placeholder='Conteúdo' 
                    value={conteudo} onChangeText={setConteudo}/>
-        <Button title='Gravar' />
+        <Button title='Gravar' onPress={salvarLembrete}/>
       </View>
 
       <FlatList 
@@ -44,8 +65,6 @@ export default function App() {
           <Lembrete item={item} />
         )}
       />
-
-
     </SafeAreaView>
   );
 }
