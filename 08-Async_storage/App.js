@@ -10,6 +10,8 @@ export default function App() {
   const [titulo, setTitulo] = useState('');
   const [conteudo, setConteudo] = useState('');
   const [lembretes, setLembretes] = useState([]);
+  //Armazena os dados que serao editados
+  const [editando, setEditando] = useState(null);
 
   useEffect(() => {
     async function carregarDadosArquivo(){
@@ -25,24 +27,63 @@ export default function App() {
       return;
     }
 
-    const novoLembrete = {
-      id : Date.now().toString(),
-      titulo : titulo,
-      conteudo : conteudo,
-      dataCriacao : Date.now(),      
+    if(editando != null){
+      const lembreteEditado = {
+        ...editando,
+        titulo : titulo,
+        conteudo : conteudo
+      }
+
+      const novaLista = lembretes.map(item => (item.id === editando.id)
+                                                  ? lembreteEditado : item);
+      await gravarDadosNoArquivo(novaLista);                                                  
+    }else{
+      const novoLembrete = {
+        id : Date.now().toString(),
+        titulo : titulo,
+        conteudo : conteudo,
+        dataCriacao : Date.now(),  
+        finalizado : false,    
+      }
+  
+      let novaLista;
+      novaLista = [...lembretes, novoLembrete];  
+      await gravarDadosNoArquivo(novaLista);   
     }
 
-    let novaLista;
-    novaLista = [...lembretes, novoLembrete];
-
-    await gravarDadosNoArquivo(novaLista);
+    setEditando(null);    
     setTitulo('');
     setConteudo('');
+  }
+
+  async function apagarLembrete(id){
+    //Gera uma nova lista sem o lembrete removido
+    const novaLista = lembretes.filter(item => item.id !== id);
+    gravarDadosNoArquivo(novaLista);
+  }
+
+  function editarLembrete(lembrete){
+    setEditando(lembrete);
+    setTitulo(lembrete.titulo);
+    setConteudo(lembrete.conteudo);
   }
 
   async function gravarDadosNoArquivo(novaLista){
     setLembretes(novaLista);
     await LembreteDAO.salvarTodos(novaLista);
+  }
+
+  async function finalizarLembrete(lembrete){
+    const lembreteFinalizado = {
+      ...lembrete,
+      finalizado : !lembrete.finalizado,
+    }
+
+    console.log(lembreteFinalizado);
+
+    const novaLista = lembretes.map(item => (item.id === lembrete.id)
+                                              ? lembreteFinalizado : item);
+    gravarDadosNoArquivo(novaLista);
   }
 
   return (
@@ -62,7 +103,10 @@ export default function App() {
         data={lembretes}
         keyExtractor={(item) => item.id}
         renderItem={({item}) => (
-          <Lembrete item={item} />
+          <Lembrete item={item} 
+                    onApagar={apagarLembrete}
+                    onEditar={editarLembrete}
+                    onFinalizar={finalizarLembrete}/>
         )}
       />
     </SafeAreaView>

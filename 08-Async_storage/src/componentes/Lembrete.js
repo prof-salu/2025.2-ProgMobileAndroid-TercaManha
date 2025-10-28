@@ -1,20 +1,23 @@
 import {View, Text, StyleSheet, 
         Button, TouchableOpacity} from 'react-native';
 
-export default function Lembrete({item}){
+export default function Lembrete({item, onApagar, onEditar, onFinalizar}){
     const dataFormatada = new Date(item.dataCriacao).toLocaleDateString('pt-BR');
     return(
-        <TouchableOpacity>
-            <View style={styles.itemLista}>
+        <TouchableOpacity onPress={() => onEditar(item)}>
+            <View style={[styles.itemLista, item.finalizado && styles.itemListaFinalizado]}>
                 <View style={{flex: 1}}>
-                    <Text style={styles.itemTitulo}>{item.titulo}</Text>
-                    <Text style={styles.itemConteudo}>{item.conteudo}</Text>
-                    <Text style={styles.itemData}>Criado em: {dataFormatada}</Text>
+                    <Text 
+                        style={[styles.itemTitulo, item.finalizado && styles.textoFinalizado]}>
+                            {item.titulo}</Text>
+                    <Text style={[styles.itemConteudo, item.finalizado && styles.textoFinalizado]}>{item.conteudo}</Text>
+                    <Text style={[styles.itemData, item.finalizado && styles.textoFinalizado]}>Criado em: {dataFormatada}</Text>
                 </View>
             
                 <View style={styles.botoes}>
-                    <Button title='Finalizar' />
-                    <TouchableOpacity style={styles.apagar}>
+                    <Button title='Finalizar' onPress={() => onFinalizar(item)}/>
+                    <TouchableOpacity style={styles.apagar} disabled={!item.finalizado} 
+                                      onPress={() => onApagar(item.id)}>
                         <Text style={styles.textoApagar}>X</Text>
                     </TouchableOpacity>
                 </View>
@@ -42,5 +45,9 @@ const styles = StyleSheet.create({
         width: 40, height: 40
     }, textoApagar: {
         color: 'white', fontWeight: 'bold'
+    }, textoFinalizado: {
+        textDecorationLine: 'line-through', color: '#aaa',
+    }, itemListaFinalizado: {
+        backgroundColor: '#ccc',
     }
 })
