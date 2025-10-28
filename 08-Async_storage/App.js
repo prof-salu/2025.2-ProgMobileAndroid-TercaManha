@@ -84,6 +84,12 @@ export default function App() {
     const novaLista = lembretes.map(item => (item.id === lembrete.id)
                                               ? lembreteFinalizado : item);
     gravarDadosNoArquivo(novaLista);
+
+    if(editando && editando.id === lembrete.id){
+      setEditando(null);
+      setTitulo('');
+      setConteudo('');
+    }
   }
 
   return (
