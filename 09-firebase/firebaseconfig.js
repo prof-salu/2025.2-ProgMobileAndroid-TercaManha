@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDH06vjzyYN2SMxDAUSjNIAj0DAvUutlrM",
-    authDomain: "meuslembretesmanha-7b201.firebaseapp.com",
-    projectId: "meuslembretesmanha-7b201",
-    storageBucket: "meuslembretesmanha-7b201.firebasestorage.app",
-    messagingSenderId: "661785318261",
-    appId: "1:661785318261:web:3315d649f5cce78bce393c",
-    measurementId: "G-CW0PV5FSEZ"
+    apiKey: "SUA_API_KEY",
+    authDomain: "SUA_API_KEY",
+    projectId: "SUA_API_KEY",
+    storageBucket: "SUA_API_KEY",
+    messagingSenderId: "SUA_API_KEY",
+    appId: "SUA_API_KEY",
+    measurementId: "SUA_API_KEY"
 };
 
 const app = initializeApp(firebaseConfig);
